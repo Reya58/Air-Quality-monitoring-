@@ -1,0 +1,231 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Echo Air Quality Monitoring Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900">
+    <div class="container mx-auto p-4">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold">Echo Air Quality Monitoring Assistant</h1>
+            <p class="text-lg">Monitor your air quality in real-time</p>
+        </header>
+        <div class="text-center mb-8">
+            <img alt="Image of Echo Air Quality Monitoring Assistant device" class="mx-auto rounded-full" height="200" src="https://storage.googleapis.com/a1aa/image/yNOg81dm6x7xF1dZUarUKoNHrJVJonQOsTBcYKB8ImQn1B9E.jpg" width="200"/>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold mb-2">MQ9 Sensor</h2>
+                <p id="mq9" class="text-lg">Loading...</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold mb-2">MQ135 Sensor</h2>
+                <p id="mq135" class="text-lg">Loading...</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold mb-2">MQ2 Sensor</h2>
+                <p id="mq2" class="text-lg">Loading...</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold mb-2">Temperature</h2>
+                <p id="temperature" class="text-lg">Loading...</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold mb-2">Humidity</h2>
+                <p id="humidity" class="text-lg">Loading...</p>
+            </div>
+        </div>
+        <div class="mt-8 text-center">
+            <button id="speakButton" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700">
+                <i class="fas fa-microphone"></i> Speak
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Firebase configuration
+       // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCTi9uUxGw8uwJdsG2m4ajW07JcHZU-MvY",
+  authDomain: "echo-edbe6.firebaseapp.com",
+  databaseURL: "https://echo-edbe6-default-rtdb.firebaseio.com",
+  projectId: "echo-edbe6",
+  storageBucket: "echo-edbe6.firebasestorage.app",
+  messagingSenderId: "878595361606",
+  appId: "1:878595361606:web:30c5e2608fb50320bcf347",
+  measurementId: "G-QGPEM7F7P3"
+};
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Reference to the database
+        var database = firebase.database();
+
+        // Function to update sensor data
+        function updateSensorData(sensorId, value) {
+            document.getElementById(sensorId).innerText = value;
+        }
+
+        // Fetch data from Firebase
+        database.ref('sensors/mq9').on('value', (snapshot) => {
+            updateSensorData('mq9', snapshot.val());
+        });
+        database.ref('sensors/mq135').on('value', (snapshot) => {
+            updateSensorData('mq135', snapshot.val());
+        });
+        database.ref('sensors/mq2').on('value', (snapshot) => {
+            updateSensorData('mq2', snapshot.val());
+        });
+        database.ref('sensors/temperature').on('value', (snapshot) => {
+            updateSensorData('temperature', snapshot.val());
+        });
+        database.ref('sensors/humidity').on('value', (snapshot) => {
+            updateSensorData('humidity', snapshot.val());
+        });
+
+        // Function to speak the sensor data
+        function speakData(message) {
+            var speech = new SpeechSynthesisUtterance(message);
+            window.speechSynthesis.speak(speech);
+        }
+
+        // Function to analyze air quality
+        function analyzeAirQuality() {
+            var mq9 = parseFloat(document.getElementById('mq9').innerText);
+            var mq135 = parseFloat(document.getElementById('mq135').innerText);
+            var mq2 = parseFloat(document.getElementById('mq2').innerText);
+
+            var airQualityMessage = "Air quality is good cool air is blowing";
+
+            if ((mq9 > 300 && mq9 < 600) || ( mq135 > 300  && mq135 < 600) || (mq2 >300 && mq2 <600)) {
+                airQualityMessage = " Today the air quality is moderate  Outdoor activities are safe but take precautions if you're sensitive to pollution";
+            }
+            if(mq9>700  || mq135>700 || mq2>700){
+                airQualityMessage = "Alert! The air quality index is at a critical level, indicating severe pollution. It is unsafe to be outdoors Stay indoors "
+            }
+
+            return airQualityMessage;
+        }
+
+        // Function to handle specific commands
+        // Function to handle specific commands
+// Function to handle specific commands
+function handleCommand(command) {
+    var temperature = parseFloat(document.getElementById('temperature').innerText);
+    var humidity = parseFloat(document.getElementById('humidity').innerText);
+    var mq9 = parseFloat(document.getElementById('mq9').innerText);
+    var mq135 = parseFloat(document.getElementById('mq135').innerText);
+    var mq2 = parseFloat(document.getElementById('mq2').innerText);
+
+    // Normalize command to lowercase and remove extra spaces
+    var normalizedCommand = command.toLowerCase().trim();
+    var message = "";
+
+    // Handle commands by checking key phrases
+    if (normalizedCommand.includes("temperature") || normalizedCommand.includes("temp")) {
+        message = `The current temperature is ${temperature} degrees.`;
+        if (temperature > 30) {
+            message += " It is too hot.";
+        }
+    } else if (normalizedCommand.includes("humidity")) {
+        message = `The current humidity is ${humidity} percent.`;
+        if (humidity > 70) {
+            message += " It is too humid.";
+        }
+    } else if (normalizedCommand.includes("mq 9") || normalizedCommand.includes("mq9 sensor") || normalizedCommand.includes("mq9")) {
+        message = `The MQ9 sensor reads ${mq9} However`;
+        message += analyzeAirQuality();
+    } else if (normalizedCommand.includes("mq135") || normalizedCommand.includes("mq135 sensor") || normalizedCommand.includes("mq 135")) {
+        message = `The MQ135 sensor reads ${mq135} However`;
+        message += analyzeAirQuality();
+    } else if (normalizedCommand.includes("mq 2") || normalizedCommand.includes("mq2 sensor") || normalizedCommand.includes("mq2")) {
+        message = `The MQ2 sensor reads ${mq2} However`;
+        message += analyzeAirQuality();
+    } else if (normalizedCommand.includes("air quality") || normalizedCommand.includes("safe to go outside")) {
+        message = analyzeAirQuality();
+    } else {
+        message = "Sorry, I didn't understand that command.";
+    }
+    speakData("Echo here");
+    speakData(message);
+}
+
+
+// Function to speak the response
+function speakData(message) {
+    var speech = new SpeechSynthesisUtterance(message);
+    window.speechSynthesis.speak(speech);
+}
+
+// Function to start speech recognition
+function startRecognition() {
+    var recognition = new (window.webkitSpeechRecognition)();
+    recognition.lang = 'en-IN';  // Set to Indian English
+    recognition.interimResults = false;  // Only return final results
+    recognition.maxAlternatives = 1;  // Only consider the top alternative
+
+    recognition.start();
+
+    recognition.onresult = function(event) {
+        var command = event.results[0][0].transcript.toLowerCase();
+        console.log("Recognized command:", command); // Debugging to see what is recognized
+        handleCommand(command);  // Pass the command to the handler
+    };
+
+    recognition.onspeechend = function() {
+        recognition.stop();
+    };
+
+    recognition.onerror = function(event) {
+        console.error('Speech recognition error detected: ' + event.error);
+    };
+
+    recognition.onstart = function() {
+        console.log("Speech recognition started. Speak now.");
+    };
+
+    recognition.onend = function() {
+        console.log("Speech recognition ended.");
+    };
+}
+
+
+        // Event listener for the speak button
+        document.getElementById('speakButton').addEventListener('click', startRecognition);
+
+        // Function to fetch data from API and update Firebase
+        function fetchDataFromAPI() {
+            fetch('https://api.thingspeak.com/channels/YOUR_CHANNEL_ID/feeds.json?results=2')
+                .then(response => response.json())
+                .then(data => {
+                    const latestData = data.feeds[data.feeds.length - 1];
+                    database.ref('sensors/mq9').set(latestData.field1);
+                    database.ref('sensors/mq135').set(latestData.field2);
+                    database.ref('sensors/mq2').set(latestData.field3);
+                    database.ref('sensors/temperature').set(latestData.field4);
+                    database.ref('sensors/humidity').set(latestData.field5);
+                })
+                .catch(error => console.error('Error fetching data from API:', error));
+        }
+        window.onload = function () {
+        speakData("Echo here.");
+        
+    };
+        // Fetch data from API every 5 minutes
+        setInterval(fetchDataFromAPI, 300000);
+        // Initial fetch
+        fetchDataFromAPI();
+    </script>
+</body>
+</html>
