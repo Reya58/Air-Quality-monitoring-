@@ -1,0 +1,136 @@
+/* src/components/dashboard.css */
+
+.dashboard-container {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.echo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.echo-header h1 {
+  font-size: 24px;
+  color: black;
+}
+
+.channel-id {
+  font-size: 14px;
+  color: #555;
+}
+
+.dashboard-image {
+  display: flex;
+  justify-content: center;
+  margin: 20px 20px;
+}
+
+.dashboard-image img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.sensor-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.sensor-card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.sensor-card h3 {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.speaker-card {
+  grid-column: span 2;
+  background-color: #222;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+
+.speaker-icon {
+  text-align: center;
+  font-size: 2rem;
+  margin: 20px 0;
+}
+
+.prediction-box {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.prediction-card {
+  margin-bottom: 15px;
+}
+
+.prediction-card h4 {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.prediction-card p {
+  font-size: 1rem;
+  color: #555;
+  font-style: italic;
+}
+
+.sensor-card p {
+  font-size: 1rem;
+  color: #555;
+  font-style: italic;
+  margin-top: 10px;
+}
+
+/* Add a light background color to predictions for better readability */
+.sensor-card .prediction-text {
+  background-color: #e6f7ff;
+  border-radius: 5px;
+  padding: 8px;
+  margin-top: 10px;
+}
+/* Center the mic icon and make it bigger */
+.mic-icon {
+  font-size: 50px;
+  text-align: center;
+  margin-top: 30px;
+  cursor: pointer;
+  color: #2c3e50;
+  animation: pulse 2s infinite;
+}
+
+/* Animation effect for the mic */
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.7; }
+}
+
+/* Display the answer below mic */
+.spoken-answer {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 18px;
+  color: #333;
+  font-weight: 500;
+}
